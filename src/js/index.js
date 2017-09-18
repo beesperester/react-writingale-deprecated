@@ -5,9 +5,6 @@ import ReactDOM from 'react-dom'
 // Router
 import Router from 'router'
 
-// Redux
-import { dispatch } from 'redux'
-
 // Utilities
 import cache from 'utilities/cache'
 import fetch from 'utilities/fetch'
@@ -21,6 +18,6 @@ cache.config.enabled = false
 
 import TreeActions from 'views/tree/actions'
 
-TreeActions.fetchAll(dispatch)
+TreeActions.fetchAll()
 
 ReactDOM.render(<Router />, document.getElementById('mountpoint'))
