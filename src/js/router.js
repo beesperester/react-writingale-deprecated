@@ -22,7 +22,7 @@ const Web = () => (
 
             <Route exact path="/" component={DashboardIndex} />
 
-            <Route path="/tree" component={TreeIndex} />
+            <Route path="/trees" component={TreeIndex} />
 
         </div>
 

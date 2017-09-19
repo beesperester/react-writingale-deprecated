@@ -5,6 +5,9 @@ import { normalize } from 'normalizr';
 import { fetchEndpoint } from 'utilities/fetch'
 import logging from 'utilities/logging'
 
+// Reducers
+import { actions } from 'reducers'
+
 export default function connect(endpoint_name, schema = {}) {
     const endpoint = fetchEndpoint(endpoint_name)
 
@@ -12,7 +15,7 @@ export default function connect(endpoint_name, schema = {}) {
         fetchAll: (dispatch) => {
             return endpoint.fetchAll((data) => {
                 dispatch({
-                    type: 'update_all',
+                    type: actions.UPDATE_ALL,
                     data: normalize(data, schema.list).entities
                 })
             })
@@ -20,7 +23,7 @@ export default function connect(endpoint_name, schema = {}) {
         fetchOne: (dispatch, id) => {
             return endpoint.fetchOne(id, (data) => {
                 dispatch({
-                    type: 'update_all',
+                    type: actions.UPDATE_ALL,
                     data: normalize(data, schema.item).entities
                 })
             })

@@ -12,7 +12,7 @@ const Index = ({ match }) => (
     <div>
         <h1>Dashboard</h1>
 
-        <Link to={`${match.url}`}>Trees</Link>
+        <Link to="/trees">Trees</Link>
     </div>
 )
 

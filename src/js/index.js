@@ -2,8 +2,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+// Redux
+import { Provider } from 'react-redux'
+
 // Router
 import Router from 'router'
+
+// Store
+import store from 'store'
 
 // Utilities
 import cache from 'utilities/cache'
@@ -18,6 +24,13 @@ cache.config.enabled = false
 
 import TreeActions from 'views/tree/actions'
 
-TreeActions.fetchAll()
+TreeActions.fetchAll(store.dispatch)
 
-ReactDOM.render(<Router />, document.getElementById('mountpoint'))
+ReactDOM.render(
+    <Provider store={store}>
+        
+        <Router />
+        
+    </Provider>, 
+    document.getElementById('mountpoint')
+)

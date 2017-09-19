@@ -8,14 +8,48 @@ import {
     Link
 } from 'react-router-dom'
 
+// Redux
+import { connect } from 'react-redux'
+
+// Normalizr
+import { denormalize } from 'normalizr';
+
+// Schema
+import { tree, trees } from 'schema'
+
+// Utilities
+import logging from 'utilities/logging'
+
 // Tree
 import Show from './show';
 
-const Index = ({ match }) => (
+function mapStateToProps(state, props) {
+    return {
+        trees: denormalize(Object.keys(state.trees), trees, state)
+    }
+}
+
+const List = ({ trees, match }) => (
+    <ul>
+
+        {trees.map((tree, index) => (
+            <li key={index}>
+
+                <Link to={`${match.url}/${tree.id}`}>{tree.name}</Link>
+
+            </li>
+        ))}
+
+    </ul>
+)
+
+const ConnectedList = connect(mapStateToProps)(List)
+
+const Index = ({ trees, match }) => (
     <div>
         <h1>Tree</h1>
 
-        <Link to={`${match.url}/1`}>Tree 1</Link>  
+        <Route exact path={`${match.url}`} component={ConnectedList} />
 
         <Route path={`${match.url}/:id`} component={Show} />
     </div>

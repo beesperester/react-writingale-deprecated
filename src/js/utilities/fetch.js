@@ -43,7 +43,7 @@ class Fetch
         logging.info(this.config.base_url)
         let url = new URL(endpoint, this.config.base_url)
 
-        logging.info('libraries/fetch.fetchAll', url.href)
+        // logging.info('libraries/fetch.fetchAll', url.href)
 
         return this.fetchCached(url.href).then((data) => {
             // logging.log('fetchAll', data)

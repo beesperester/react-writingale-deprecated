@@ -15,10 +15,11 @@ const environment = new webpack.DefinePlugin({
 })
 
 module.exports = {
-    entry: './src/js/index.js',
+    entry: ['./src/js/index.js'],
     output: {
         path: path.resolve('dist'),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        publicPath: '/'
     },
     module: {
         loaders: [
@@ -40,7 +41,7 @@ module.exports = {
     ],
     resolve: {
         modules: [
-            'src/js', 
+            'src/js',
             'node_modules'
         ]
     }
