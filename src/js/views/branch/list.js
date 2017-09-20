@@ -3,7 +3,6 @@ import React from 'react'
 
 // React Router
 import { Link } from 'react-router-dom'
-import { withRouter } from 'react-router'
 
 // Redux
 import { connect } from 'react-redux'
@@ -12,7 +11,10 @@ import { connect } from 'react-redux'
 import logging from 'utilities/logging'
 
 // Actions
-import actions from './actions'
+import {
+    createSibling,
+    createBranch
+} from './actions'
 
 function decrease(int) {
     return int - 1 >= 0 ? int - 1 : 0
@@ -23,25 +25,21 @@ function increase(int) {
 }
 
 function mapStateToProps(state, props) {
-    return {
+    const next_state = {
         ...props
     }
+
+    return next_state
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         onCreateSiblingClick: (parent_id, tree_id, sorting) => {
             // logging.info('create next sibling', parent_id, tree_id, sorting)
-            actions.store(dispatch, {
-                parent_id: parent_id,
-                tree_id: tree_id,
-                sorting: sorting
-            })
+            createSibling(parent_id, tree_id, sorting).then(action => dispatch(action))
         },
         onCreateBranchClick: (id) => {
-            actions.store(dispatch, {
-                parent_id: id
-            })
+            createBranch(id).then(action => dispatch(action))
         }
     }
 }

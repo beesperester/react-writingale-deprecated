@@ -1,44 +1,33 @@
-// Fetch
-import _fetch from 'utilities/fetch'
-
 // Normalizr
 import { normalize } from 'normalizr'
+import { trees } from 'db/schema'
+
+// Signals
+import { signals } from 'signals'
 
 // Utilities
-import logging from 'utilities/logging'
+import etherio, {endpoint} from 'utilities/etherio'
 
-// Schema
-import { trees } from 'schema'
-
-// Reducers
-import { actions } from 'reducers'
-
-export function store(dispatch, data) {
-    const url = new URL('branch', _fetch.config.base_url)
-    const serialized_data = JSON.stringify(data)
-    const headers = new Headers({
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Content-Length': serialized_data.length.toString()
-    })
-
-    const request = new Request(url, {
-        method: 'POST',
-        body: serialized_data,
-        headers: headers,
-    })
-
-    const promise = fetch(request)
-
-    promise.then((response) => response.json())
-    .then((data) => {
-        dispatch({
-            type: actions.UPDATE_ALL,
+export function createSibling(parent_id, tree_id, sorting) {
+    return etherio.post(endpoint('branch'), {
+        parent_id: parent_id,
+        tree_id: tree_id,
+        sorting: sorting
+    }).then(data => {
+        return {
+            type: signals.UPSERT,
             data: normalize(data, trees).entities
-        })
+        }
     })
 }
 
-export default {
-    store
+export function createBranch(parent_id) {
+    return etherio.post(endpoint('branch'), {
+        parent_id: parent_id
+    }).then(data => {
+        return {
+            type: signals.UPSERT,
+            data: normalize(data, trees).entities
+        }
+    })
 }

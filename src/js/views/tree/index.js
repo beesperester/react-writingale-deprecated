@@ -12,20 +12,23 @@ import {
 import { connect } from 'react-redux'
 
 // Normalizr
-import { denormalize } from 'normalizr';
+// import { denormalize } from 'normalizr';
 
 // Schema
-import { tree, trees } from 'schema'
+// import { tree, trees } from 'schema'
 
 // Utilities
 import logging from 'utilities/logging'
+
+import { treesSelector } from 'selectors'
 
 // Tree
 import Show from './show';
 
 function mapStateToProps(state, props) {
     return {
-        trees: denormalize(Object.keys(state.trees), trees, state)
+        ...props,
+        trees: treesSelector(state)
     }
 }
 
