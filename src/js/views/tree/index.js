@@ -23,6 +23,14 @@ import { selectTrees } from 'db/selectors'
 // Tree
 import Show from './show';
 
+/**
+ * Map state to props.
+ * 
+ * @param {Object} state 
+ * @param {Object} props
+ * 
+ * @return {Object} 
+ */
 function mapStateToProps(state, props) {
     const next_state = {
         ...props,

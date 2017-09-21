@@ -15,14 +15,14 @@ import {
     deleteBranch
 } from './actions'
 
-function decrease(int) {
-    return int - 1 >= 0 ? int - 1 : 0
-}
-
-function increase(int) {
-    return int + 1
-}
-
+/**
+ * Map state to props.
+ * 
+ * @param {Object} state 
+ * @param {Object} props
+ * 
+ * @return {Object} 
+ */
 function mapStateToProps(state, props) {
     const next_state = {
         ...props
@@ -31,6 +31,13 @@ function mapStateToProps(state, props) {
     return next_state
 }
 
+/**
+ * Map dispatch to props.
+ * 
+ * @param {Function} dispatch
+ * 
+ * @return {Object}
+ */
 function mapDispatchToProps(dispatch) {
     return {
         onCreateSiblingClick: (parent_id, tree_id, sorting) => {
@@ -83,7 +90,7 @@ const List = ({
                         to='#'
                         onClick={(e) => {
                             e.preventDefault()
-                            onCreateSiblingClick(parseInt(branch.parent_id), parseInt(branch.tree_id), increase(parseInt(branch.sorting)))
+                            onCreateSiblingClick(parseInt(branch.parent_id), parseInt(branch.tree_id), parseInt(branch.sorting) + 1)
                         }}
                     >Create Next</Link>
 
