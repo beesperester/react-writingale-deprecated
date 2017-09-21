@@ -6,7 +6,7 @@
     }
 
     @include breakpoint(laptop) {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
+        // grid-template-columns: repeat(1);
     }
 
     margin: -1rem;

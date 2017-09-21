@@ -65,79 +65,81 @@ const List = ({
 }) => (
     <ul>
     
-        {branches.sort((a, b) => a.sorting - b.sorting).map((branch, index) => (
-            <li key={index}>
+        {branches.sort((a, b) => a.sorting - b.sorting).map((branch, index) => {
+            return (
+                <li key={index}>
 
-                {branch.sorting}.{branch.id}
+                    {branch.sorting}.{branch.depth}.{branch.id}
 
-                <ul>
+                    <ul>
 
-                    <li>
+                        <li>
 
-                        <Link
-                        to='#'
-                        onClick={(e) => {
-                            e.preventDefault()
-                            onCreateSiblingClick(parseInt(branch.parent_id), parseInt(branch.tree_id), parseInt(branch.sorting))
-                        }}
-                    >Create Previous</Link>
+                            <Link
+                            to='#'
+                            onClick={(e) => {
+                                e.preventDefault()
+                                onCreateSiblingClick(parseInt(branch.parent_id), parseInt(branch.tree_id), parseInt(branch.sorting))
+                            }}
+                        >Create Previous</Link>
 
-                    </li>
+                        </li>
 
-                    <li>
+                        <li>
 
-                        <Link
-                        to='#'
-                        onClick={(e) => {
-                            e.preventDefault()
-                            onCreateSiblingClick(parseInt(branch.parent_id), parseInt(branch.tree_id), parseInt(branch.sorting) + 1)
-                        }}
-                    >Create Next</Link>
+                            <Link
+                            to='#'
+                            onClick={(e) => {
+                                e.preventDefault()
+                                onCreateSiblingClick(parseInt(branch.parent_id), parseInt(branch.tree_id), parseInt(branch.sorting) + 1)
+                            }}
+                        >Create Next</Link>
 
-                    </li>
+                        </li>
 
-                    <li>
+                        <li>
 
-                        <Link
-                        to='#'
-                        onClick={(e) => {
-                            e.preventDefault()
-                            onCreateAncestorClick(branch.id, branch.parent_id, branch.tree_id)
-                        }}
-                    >Create Ancestor</Link>
+                            <Link
+                            to='#'
+                            onClick={(e) => {
+                                e.preventDefault()
+                                onCreateAncestorClick(branch.id, branch.parent_id, branch.tree_id)
+                            }}
+                        >Create Ancestor</Link>
 
-                    </li>
+                        </li>
 
-                    <li>
+                        <li>
 
-                        <Link
-                        to='#'
-                        onClick={(e) => {
-                            e.preventDefault()
-                            onCreateDescendantClick(branch.id)
-                        }}
-                    >Create Descendant</Link>
+                            <Link
+                            to='#'
+                            onClick={(e) => {
+                                e.preventDefault()
+                                onCreateDescendantClick(branch.id)
+                            }}
+                        >Create Descendant</Link>
 
-                    </li>
+                        </li>
 
-                    <li>
+                        <li>
 
-                        <Link
-                        to='#'
-                        onClick={(e) => {
-                            e.preventDefault()
-                            onDeleteBranchClick(branch.id)
-                        }}
-                    >Delete Branch</Link>
+                            <Link
+                            to='#'
+                            onClick={(e) => {
+                                e.preventDefault()
+                                onDeleteBranchClick(branch.id)
+                            }}
+                        >Delete Branch</Link>
 
-                    </li>
+                        </li>
 
-                </ul>
+                    </ul>
 
-                {branch.branches.length ? <ConnectedList branches={branch.branches} onCreateSiblingClick={onCreateSiblingClick} /> : undefined}
-                
-            </li>
-        ))}
+                    {branch.branches.length ? <ConnectedList branches={branch.branches} onCreateSiblingClick={onCreateSiblingClick} /> : undefined}
+                    
+                </li>
+            )
+        })}
 
     </ul>
 )
