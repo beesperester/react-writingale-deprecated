@@ -1,21 +1,21 @@
 const path = require('path');
 const webpack = require('webpack');
-
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
 const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
     template: './src/index.html',
     filename: 'index.html',
     inject: 'body'
 })
 
-const environment = new webpack.DefinePlugin({
-    'process.env': {
-        'NODE_ENV': JSON.stringify('development')
-    }
+const extractSass = new ExtractTextPlugin({
+    filename: '[name].bundle.css',
+    allChunks: true
 })
 
 module.exports = {
-    entry: ['./src/js/index.js'],
+    entry: ['./src/js/index.js', './src/sass/main.scss'],
     output: {
         path: path.resolve('dist'),
         filename: 'bundle.js',
@@ -32,12 +32,16 @@ module.exports = {
                 test: /\.jsx$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/
+            },
+            {
+                test: /\.(sass|scss)$/,
+                loader: process.env.NODE_ENV == 'development' ? ExtractTextPlugin.extract('css-loader!sass-loader') : 'style-loader!css-loader!sass-loader'
             }
         ]
     },
     plugins: [
         HtmlWebpackPluginConfig,
-        environment
+        extractSass
     ],
     resolve: {
         modules: [

@@ -1,0 +1,17 @@
+.o-grid {
+    display: grid;
+
+    @include breakpoint(tablet) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    @include breakpoint(laptop) {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+
+    margin: -1rem;
+
+    & > div {
+        margin: 1rem;
+    }
+}
