@@ -14,10 +14,30 @@ import { digestState } from 'digest'
  * @param {Integer} sorting 
  */
 export function createSibling(parent_id, tree_id, sorting) {
-    return etherio.post(endpoint('branch'), {
+    const payload = {
         parent_id: parent_id,
         tree_id: tree_id,
         sorting: sorting
+    }
+
+    console.info('views/branch/actions/createSibling', payload)
+
+    return etherio.post(endpoint('branch'), payload).then(data => {
+        return {
+            type: signals.STATE_UPSERT,
+            data: digestState(data)
+        }
+    })
+}
+
+/**
+ * Create descendant for id
+ * 
+ * @param {Integer} id 
+ */
+export function createDescendant(id) {
+    return etherio.post(endpoint('branch'), {
+        parent_id: id
     }).then(data => {
         return {
             type: signals.STATE_UPSERT,
@@ -27,14 +47,20 @@ export function createSibling(parent_id, tree_id, sorting) {
 }
 
 /**
- * Create branch for parent_id
+ * Create ancestor for id
  * 
- * @param {Integer} parent_id 
+ * @param {Integer} id 
  */
-export function createBranch(parent_id) {
-    return etherio.post(endpoint('branch'), {
-        parent_id: parent_id
-    }).then(data => {
+export function createAncestor(id, parent_id, tree_id) {
+    const payload = {
+        update_id: id,
+        parent_id: parent_id,
+        tree_id: tree_id
+    }
+
+    console.info('views/branch/actions/createAncestor', payload)
+
+    return etherio.post(endpoint('branch'), payload).then(data => {
         return {
             type: signals.STATE_UPSERT,
             data: digestState(data)

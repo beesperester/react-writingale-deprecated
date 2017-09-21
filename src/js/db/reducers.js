@@ -38,8 +38,8 @@ export function trees(state = tree_state, action) {
                 return upsert(state, action.data.trees)
             }
         case signals.STATE_DELETE:
-            if (action.data.branches) {
-                return upsert(state, action.data.branches)
+            if (action.data.trees) {
+                return upsert(state, action.data.trees)
             }
     }
 

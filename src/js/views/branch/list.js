@@ -10,7 +10,8 @@ import { connect } from 'react-redux'
 // Actions
 import {
     createSibling,
-    createBranch,
+    createAncestor,
+    createDescendant,
     deleteBranch
 } from './actions'
 
@@ -35,8 +36,11 @@ function mapDispatchToProps(dispatch) {
         onCreateSiblingClick: (parent_id, tree_id, sorting) => {
             createSibling(parent_id, tree_id, sorting).then(action => dispatch(action))
         },
-        onCreateBranchClick: (id) => {
-            createBranch(id).then(action => dispatch(action))
+        onCreateDescendantClick: (id) => {
+            createDescendant(id).then(action => dispatch(action))
+        },
+        onCreateAncestorClick: (id, parent_id, tree_id) => {
+            createAncestor(id, parent_id, tree_id).then(action => dispatch(action))
         },
         onDeleteBranchClick: (id) => {
             deleteBranch(id).then(action => dispatch(action))
@@ -46,8 +50,9 @@ function mapDispatchToProps(dispatch) {
 
 const List = ({ 
     match, 
-    branches, 
-    onCreateBranchClick,
+    branches,
+    onCreateAncestorClick,
+    onCreateDescendantClick,
     onCreateSiblingClick,
     onDeleteBranchClick
 }) => (
@@ -56,7 +61,7 @@ const List = ({
         {branches.sort((a, b) => a.sorting - b.sorting).map((branch, index) => (
             <li key={index}>
 
-                {branch.sorting}
+                {branch.sorting}.{branch.id}
 
                 <ul>
 
@@ -90,9 +95,21 @@ const List = ({
                         to='#'
                         onClick={(e) => {
                             e.preventDefault()
-                            onCreateBranchClick(branch.id)
+                            onCreateAncestorClick(branch.id, branch.parent_id, branch.tree_id)
                         }}
-                    >Create Branch</Link>
+                    >Create Ancestor</Link>
+
+                    </li>
+
+                    <li>
+
+                        <Link
+                        to='#'
+                        onClick={(e) => {
+                            e.preventDefault()
+                            onCreateDescendantClick(branch.id)
+                        }}
+                    >Create Descendant</Link>
 
                     </li>
 
