@@ -18,10 +18,7 @@ export class EtherIO
         const default_config = {
             base_url: '',
             queue: true,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+            headers: {}
         }
 
         this.config = Object.assign({}, default_config, config)
@@ -39,19 +36,25 @@ export class EtherIO
      */
     request(url, payload = {}, config = {}) {
         const payload_serialized = JSON.stringify(payload)
+        const default_headers = {
+            'Content-Length': payload_serialized.length.toString()
+        }
         const default_config = {
             method: 'GET',
-            headers: Object.assign({}, this.config.headers, {
-                'Content-Length': payload_serialized.length.toString()
-            })
+            headers: Object.assign(default_headers, this.config.headers)
         }
         config = Object.assign({}, default_config, config)
 
-        // add body to config for requests other than get or head
-        if (!['GET', 'HEAD'].includes(config.method)) {
+        // add payload to config for post and put requests
+        if (['POST', 'PUT'].includes(config.method)) {
             config.body = payload_serialized
+            config.headers = Object.assign(config.headers, {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            })
         }
-        
+
+        console.info('EtherIO', config)
 
         // check if url already requested, return queued promise
         const promise_index = this.queue.map(promise => promise.url).indexOf(url.toString)
@@ -134,7 +137,9 @@ export class EtherIO
      * @return {Promise}
      */
     delete(url, payload = {}) {
-        return this.request(url, payload, {
+        url = new URL(!is_empty(payload) ? objectToQueryParams(payload) : '', url)
+
+        return this.request(url, {}, {
             method: 'DELETE'
         })
     }

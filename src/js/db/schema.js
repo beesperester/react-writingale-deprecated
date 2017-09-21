@@ -18,5 +18,7 @@ tree.define({
 
 export default {
     branch,
-    tree
+    branches,
+    tree,
+    trees
 }

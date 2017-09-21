@@ -13,40 +13,24 @@ import { trees } from 'db/schema'
 import Router from 'router'
 
 // Store
-// import orm from 'db/orm'
 import store from 'db/store'
 
-import Tree from 'models/tree'
-
 // Utilities
-// import cache from 'utilities/cache'
-// import fetch from 'utilities/fetch'
-import logging from 'utilities/logging'
-import etherio from 'utilities/etherio'
+import etherio from 'libraries/etherio'
 
 import { signals } from 'signals'
 
+import { digestState } from 'digest'
 
 // override base url
 etherio.config.base_url = 'http://ubuntu.local/api/v1.0/'
 
-etherio.get(etherio.prefixUrl('tree')).then(data => {
-    const data_normalized = normalize(data, trees)
-
-    // console.log(data_normalized.entities)
-
+etherio.get(etherio.prefixUrl('state')).then(data => {
     store.dispatch({
-        type: signals.UPSERT,
-        data: data_normalized.entities
+        type: signals.STATE_UPSERT,
+        data: digestState(data)
     })
-
-    // console.log(orm.session().Tree.all().toRefArray())
-
-    // console.log(store.getState())
 })
-
-// disable cache
-// cache.config.enabled = false
 
 ReactDOM.render(
     <Provider store={store}>

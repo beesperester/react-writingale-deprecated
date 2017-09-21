@@ -17,19 +17,19 @@ import { connect } from 'react-redux'
 // Schema
 // import { tree, trees } from 'schema'
 
-// Utilities
-import logging from 'utilities/logging'
-
-import { treesSelector } from 'selectors'
+// Selectors
+import { selectTrees } from 'db/selectors'
 
 // Tree
 import Show from './show';
 
 function mapStateToProps(state, props) {
-    return {
+    const next_state = {
         ...props,
-        trees: treesSelector(state)
+        trees: selectTrees(state)
     }
+
+    return next_state
 }
 
 const List = ({ trees, match }) => (

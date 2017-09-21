@@ -7,13 +7,11 @@ import { Link } from 'react-router-dom'
 // Redux
 import { connect } from 'react-redux'
 
-// Utilities
-import logging from 'utilities/logging'
-
 // Actions
 import {
     createSibling,
-    createBranch
+    createBranch,
+    deleteBranch
 } from './actions'
 
 function decrease(int) {
@@ -35,11 +33,13 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
     return {
         onCreateSiblingClick: (parent_id, tree_id, sorting) => {
-            // logging.info('create next sibling', parent_id, tree_id, sorting)
             createSibling(parent_id, tree_id, sorting).then(action => dispatch(action))
         },
         onCreateBranchClick: (id) => {
             createBranch(id).then(action => dispatch(action))
+        },
+        onDeleteBranchClick: (id) => {
+            deleteBranch(id).then(action => dispatch(action))
         }
     }
 }
@@ -48,14 +48,15 @@ const List = ({
     match, 
     branches, 
     onCreateBranchClick,
-    onCreateSiblingClick 
+    onCreateSiblingClick,
+    onDeleteBranchClick
 }) => (
     <ul>
     
         {branches.sort((a, b) => a.sorting - b.sorting).map((branch, index) => (
             <li key={index}>
 
-                {branch.id} {branch.content}
+                {branch.sorting}
 
                 <ul>
 
@@ -92,6 +93,18 @@ const List = ({
                             onCreateBranchClick(branch.id)
                         }}
                     >Create Branch</Link>
+
+                    </li>
+
+                    <li>
+
+                        <Link
+                        to='#'
+                        onClick={(e) => {
+                            e.preventDefault()
+                            onDeleteBranchClick(branch.id)
+                        }}
+                    >Delete Branch</Link>
 
                     </li>
 

@@ -5,22 +5,19 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 // Utilities
-import logging from 'utilities/logging'
-import waitFor from 'utilities/waitfor'
+import waitFor from 'components/waitfor'
 
-import { treeSelector } from 'selectors'
+import { selectTree } from 'db/selectors'
 
 // Branches
 import BranchList from 'views/branch/list'
 
 function mapStateToProps(state, props) {
-    const id = parseInt(props.match.params.id)
-
-    if (!state.Tree.items.includes(id)) return {}
+    const id = props.match.params.id
     
     const next_state = {
         ...props,
-       ...treeSelector(state, id)
+       ...selectTree(state, id)
     }
 
     return next_state
