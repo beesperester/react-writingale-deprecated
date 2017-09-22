@@ -2,7 +2,7 @@
 import React from 'react'
 
 // React Router
-import { Link } from 'react-router-dom'
+import { Route, Link, withRouter } from 'react-router-dom'
 
 // Redux
 import { connect } from 'react-redux'
@@ -51,20 +51,19 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-const Card = ({
+const CardControls = ({
+    match,
     branch,
     onCreateAncestorClick,
     onCreateDescendantClick,
     onCreateSiblingClick,
     onDeleteBranchClick
-}) => (
-    <div>
-        {branch.parent_id}.{branch.sorting}.{branch.depth}.{branch.id}
-
+}) => {
+    if (match.params.card_hash == branch.hash) return (
         <ul>
-
+        
             <li>
-
+    
                 <Link
                 to='#'
                 onClick={(e) => {
@@ -72,11 +71,11 @@ const Card = ({
                     onCreateSiblingClick(parseInt(branch.parent_id), parseInt(branch.tree_id), parseInt(branch.sorting))
                 }}
             >Create Previous</Link>
-
+    
             </li>
-
+    
             <li>
-
+    
                 <Link
                 to='#'
                 onClick={(e) => {
@@ -84,11 +83,11 @@ const Card = ({
                     onCreateSiblingClick(parseInt(branch.parent_id), parseInt(branch.tree_id), parseInt(branch.sorting) + 1)
                 }}
             >Create Next</Link>
-
+    
             </li>
-
+    
             <li>
-
+    
                 <Link
                 to='#'
                 onClick={(e) => {
@@ -96,11 +95,11 @@ const Card = ({
                     onCreateAncestorClick(branch.id, branch.parent_id, branch.tree_id)
                 }}
             >Create Ancestor</Link>
-
+    
             </li>
-
+    
             <li>
-
+    
                 <Link
                 to='#'
                 onClick={(e) => {
@@ -108,11 +107,11 @@ const Card = ({
                     onCreateDescendantClick(branch.id)
                 }}
             >Create Descendant</Link>
-
+    
             </li>
-
+    
             <li>
-
+    
                 <Link
                 to='#'
                 onClick={(e) => {
@@ -120,11 +119,40 @@ const Card = ({
                     onDeleteBranchClick(branch.id)
                 }}
             >Delete Branch</Link>
-
+    
             </li>
-
+    
         </ul>
+    )
+
+    return null
+}
+
+const RouterCardControls = withRouter(CardControls)
+
+const Card = ({
+    match,
+    branch,
+    onCreateAncestorClick,
+    onCreateDescendantClick,
+    onCreateSiblingClick,
+    onDeleteBranchClick
+}) => (
+    <div>
+        <Link to={`${match.url}/branch/${branch.branch_hash}/card/${branch.hash}`}>{branch.parent_id}.{branch.sorting}.{branch.depth}.{branch.id}</Link>
+
+        <Route path={`${match.url}/branch/:branch_hash/card/:card_hash`}>
+
+            <RouterCardControls
+                branch={branch} 
+                onCreateAncestorClick={onCreateAncestorClick}
+                onCreateDescendantClick={onCreateDescendantClick}
+                onCreateSiblingClick={onCreateSiblingClick}
+                onDeleteBranchClick={onDeleteBranchClick}
+            />
+
+        </Route>
     </div>
 )
 
-export default connect(mapStateToProps, mapDispatchToProps)(Card)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Card))

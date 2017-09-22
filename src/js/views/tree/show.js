@@ -129,11 +129,7 @@ const Show = ({
                 <div key={index}>
 
                     {column.sort(sortColumn).map((branch, index) => (
-                        <div key={index}>
-                            
-                            <Card branch={branch} />
-
-                        </div>
+                        <Card key={branch.id} branch={branch} />
                     ))}
 
                 </div>
