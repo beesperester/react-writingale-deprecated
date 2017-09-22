@@ -1,7 +1,9 @@
-@import "tools/_tools";
-@import "generics/_generics";
-@import "objects/_objects";
+@import "settings/settings";
+@import "tools/tools";
+@import "generics/generics";
+@import "elements/elements";
+@import "objects/objects";
+@import "components/components";
 
-* {
-    box-sizing: border-box;
-}
+// Bootstrap
+@import "~bootstrap/scss/bootstrap";

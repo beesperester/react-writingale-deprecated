@@ -22,6 +22,15 @@ import {
     createBranch
 } from './actions'
 
+/**
+ * Flatten tree of branches to array of branches by plucking
+ * child branches and pushing them to the carried array.
+ * 
+ * @param {Array} carry 
+ * @param {Array} current
+ * 
+ * @return {Array} 
+ */
 function flattenBranches(carry, current) {
     const branches = [...current.branches]
 
@@ -34,11 +43,37 @@ function flattenBranches(carry, current) {
     return carry
 }
 
+/**
+ * Sort by sorting and unique_sorting.
+ * 
+ * @param {Object} a 
+ * @param {Object} b
+ * 
+ * @return {Integer} 
+ */
 function sortColumn(a, b) {
-    const a_value = (a.sorting + a.parent_sorting)
-    const b_value = (b.sorting + b.parent_sorting)
+    const a_value = (a.sorting + a.unique_sorting)
+    const b_value = (b.sorting + b.unique_sorting)
 
     return a_value - b_value
+}
+
+/**
+ * Calculate overall sorting by accessing the parents sorting.
+ * 
+ * @param {Object} state 
+ * @param {Object} branch
+ * 
+ * @return {Integer} 
+ */
+function calcSorting(state, branch) {
+    let sorting = 0
+
+    if (branch.parent_id != null && state.branches[branch.parent_id]) {
+        sorting = sorting + (state.branches[branch.parent_id].sorting * 100)
+    }
+
+    return sorting
 }
 
 /**
@@ -50,6 +85,7 @@ function sortColumn(a, b) {
  * @return {Object} 
  */
 function mapStateToProps(state, props) {
+    // console.info(state)
     const id = props.match.params.id
     
     const tree = selectTree(state, id)
@@ -69,22 +105,16 @@ function mapStateToProps(state, props) {
     const columns = column_indices.map(depth => {
         return branches_flattened.filter(branch => {
             return branch.depth == depth
-        }).map(branch => {
-            const parent_sorting = branch.parent_id ? parseInt(state.branches[branch.parent_id].sorting) : 0
-
-            return Object.assign(branch, {
-                sorting: parseInt(branch.sorting),
-                parent_sorting: ((parent_sorting + 1) * 100)
-            })
         })
     })
 
-    console.info(columns)
+    // console.info(columns)
 
     const next_state = {
         ...props,
-       tree: tree,
-       columns: columns
+        app: state.app,
+        tree: tree,
+        columns: columns
     }
 
     // console.info(next_state)
@@ -107,7 +137,8 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-const Show = ({ 
+const Show = ({
+    app,
     tree,
     columns,
     onCreateBranchClick
@@ -126,7 +157,10 @@ const Show = ({
         <div className="o-grid" style={{gridTemplateColumns: `repeat(${columns.length}, 1fr)`}}>
 
             {columns.map((column, index) => (
-                <div key={index}>
+                <div 
+                    key={index}
+                    className={['o-column', app.active_branch_node && column.map(branch => branch.id).includes(app.active_branch_node.id) ? 'o-column--focus' : undefined].filter(Boolean).join(' ')}
+                >
 
                     {column.sort(sortColumn).map((branch, index) => (
                         <Card key={branch.id} branch={branch} />

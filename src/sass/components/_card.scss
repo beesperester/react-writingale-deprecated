@@ -1,0 +1,101 @@
+.c-card {
+    background-color: darken($gray-lighter, 40%);
+    border-left: 0.5rem solid $gray-dark;
+    position: relative;
+
+    &--current {
+        background-color: $gray-lighter !important;
+        border-color: $brand-success;
+        z-index: 10;
+
+        @include dropshadow;
+    }
+
+    &--descendant {
+        background-color: darken($gray-lighter, 10%);
+    }
+
+    &--ascendant {
+        background-color: darken($gray-lighter, 10%);
+    }
+    
+    &--sibling {
+        background-color: darken($gray-lighter, 20%);
+    }
+
+    &__controls {
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 15;
+    }
+
+    &__control {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 20;
+
+        & > a {
+            background-color: $brand-success;
+            display: block;
+            height: 1rem;
+            width: 1rem;
+        }
+
+        &--create-parent {
+            left: -1rem;
+            top: 50%;
+            transform: translate(0, -50%); 
+
+            & > a {
+                border-top-left-radius: 0.25rem;
+                border-bottom-left-radius: 0.25rem;
+                height: 2rem;                
+            }
+        }
+
+        &--create-child {
+            left: 100%;
+            top: 50%;
+            transform: translate(0, -50%);
+
+            & > a {
+                border-top-right-radius: 0.25rem;
+                border-bottom-right-radius: 0.25rem;
+                height: 2rem;
+            }
+        }
+
+        &--create-before {
+            left: 50%;
+            top: -1rem;
+            transform: translate(-50%, 0);
+
+            & > a {
+                border-top-left-radius: 0.25rem;
+                border-top-right-radius: 0.25rem;
+                width: 2rem;
+            }
+        }
+        
+        &--create-after {
+            left: 50%;
+            top: 100%;
+            transform: translate(-50%, 0);
+
+            & > a {
+                border-bottom-left-radius: 0.25rem;
+                border-bottom-right-radius: 0.25rem;
+                width: 2rem;
+            }
+        }
+        
+        &--delete {
+            left: 100%;
+            transform: translate(-100%, 0);
+        }
+    }
+}

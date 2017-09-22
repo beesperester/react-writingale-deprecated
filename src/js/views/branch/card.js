@@ -7,12 +7,20 @@ import { Route, Link, withRouter } from 'react-router-dom'
 // Redux
 import { connect } from 'react-redux'
 
+// Moment
+import moment from 'moment'
+
+// Signals
+import { relations } from 'signals'
+
 // Actions
 import {
     createSibling,
+    createNextSibling,
     createAncestor,
     createDescendant,
-    deleteBranch
+    deleteBranch,
+    selectBranch
 } from './actions'
 
 /**
@@ -24,7 +32,43 @@ import {
  * @return {Object} 
  */
 function mapStateToProps(state, props) {
-    return props
+    const app = state.app
+    const branch = props.branch
+    let relation = undefined
+
+    if (app.active_branch_node) {
+        if (app.active_branch_node.id == branch.id) {
+            relation = relations.CURRENT
+        } else {        
+            const active_trail = app.active_branch_node.trail
+            const active_parent_trail = active_trail.split('/').slice(0, -1).join('/')
+            const branch_trail = branch.trail
+
+            
+            if (branch_trail.length == active_trail.length) {
+                // branch is on same level as active branch
+                if (branch_trail.startsWith(active_parent_trail) && branch.parent_id) {
+                    relation = relations.SIBLING
+                }
+            } else if (branch_trail.length < active_trail.length) {
+                // branch is on previous level of active branch
+                if (active_trail.startsWith(branch_trail)) {
+                    relation = relations.ASCENDANT
+                }
+            } else if (branch_trail.length > active_trail.length) {
+                // branch is on later level of active branch
+                if (branch_trail.startsWith(active_trail)) {
+                    relation = relations.DESCENDANT
+                }
+            }        
+        }
+    }
+
+    return {
+        ...props,
+        app,
+        relation
+    }
 }
 
 /**
@@ -36,122 +80,138 @@ function mapStateToProps(state, props) {
  */
 function mapDispatchToProps(dispatch) {
     return {
-        onCreateSiblingClick: (parent_id, tree_id, sorting) => {
-            createSibling(parent_id, tree_id, sorting).then(action => dispatch(action))
+        onCreateSiblingClick: (branch) => {
+            createSibling(branch).then(action => dispatch(action))
         },
-        onCreateDescendantClick: (id) => {
-            createDescendant(id).then(action => dispatch(action))
+        onCreateNextSiblingClick: (branch) => {
+            createNextSibling(branch).then(action => dispatch(action))
         },
-        onCreateAncestorClick: (id, parent_id, tree_id) => {
-            createAncestor(id, parent_id, tree_id).then(action => dispatch(action))
+        onCreateDescendantClick: (branch) => {
+            createDescendant(branch).then(action => dispatch(action))
         },
-        onDeleteBranchClick: (id) => {
-            deleteBranch(id).then(action => dispatch(action))
+        onCreateAncestorClick: (branch) => {
+            createAncestor(branch).then(action => dispatch(action))
+        },
+        onDeleteBranchClick: (branch) => {
+            deleteBranch(branch).then(action => dispatch(action))
+        },
+        onSelectBranchClick: (branch) => {
+            dispatch(selectBranch(branch))
         }
     }
 }
 
-const CardControls = ({
-    match,
-    branch,
-    onCreateAncestorClick,
-    onCreateDescendantClick,
-    onCreateSiblingClick,
-    onDeleteBranchClick
-}) => {
-    if (match.params.card_hash == branch.hash) return (
-        <ul>
-        
-            <li>
-    
-                <Link
-                to='#'
-                onClick={(e) => {
-                    e.preventDefault()
-                    onCreateSiblingClick(parseInt(branch.parent_id), parseInt(branch.tree_id), parseInt(branch.sorting))
-                }}
-            >Create Previous</Link>
-    
-            </li>
-    
-            <li>
-    
-                <Link
-                to='#'
-                onClick={(e) => {
-                    e.preventDefault()
-                    onCreateSiblingClick(parseInt(branch.parent_id), parseInt(branch.tree_id), parseInt(branch.sorting) + 1)
-                }}
-            >Create Next</Link>
-    
-            </li>
-    
-            <li>
-    
-                <Link
-                to='#'
-                onClick={(e) => {
-                    e.preventDefault()
-                    onCreateAncestorClick(branch.id, branch.parent_id, branch.tree_id)
-                }}
-            >Create Ancestor</Link>
-    
-            </li>
-    
-            <li>
-    
-                <Link
-                to='#'
-                onClick={(e) => {
-                    e.preventDefault()
-                    onCreateDescendantClick(branch.id)
-                }}
-            >Create Descendant</Link>
-    
-            </li>
-    
-            <li>
-    
-                <Link
-                to='#'
-                onClick={(e) => {
-                    e.preventDefault()
-                    onDeleteBranchClick(branch.id)
-                }}
-            >Delete Branch</Link>
-    
-            </li>
-    
-        </ul>
-    )
+function calcClasses(relation) {
+    let classes = [
+        'o-card',
+        'c-card'
+    ]
 
-    return null
+    if (relation == relations.CURRENT) {
+        classes.push('c-card--current')
+    } else if (relation == relations.ASCENDANT) {
+        classes.push('c-card--ascendant')
+    } else if (relation == relations.DESCENDANT) {
+        classes.push('c-card--descendant')
+    } else if (relation == relations.SIBLING) {
+        classes.push('c-card--sibling')
+    }
+
+    return classes.filter(Boolean)
 }
-
-const RouterCardControls = withRouter(CardControls)
 
 const Card = ({
     match,
     branch,
+    relation,    
     onCreateAncestorClick,
     onCreateDescendantClick,
     onCreateSiblingClick,
-    onDeleteBranchClick
+    onCreateNextSiblingClick,
+    onDeleteBranchClick,
+    onSelectBranchClick
 }) => (
-    <div>
-        <Link to={`${match.url}/branch/${branch.branch_hash}/card/${branch.hash}`}>{branch.parent_id}.{branch.sorting}.{branch.depth}.{branch.id}</Link>
+    <div className={calcClasses(relation).join(' ')}>
+        <Link 
+            to='#'
+            onClick={e => {
+                e.preventDefault()
+                onSelectBranchClick(branch)
+            }}
+        >{branch.id}</Link>
 
-        <Route path={`${match.url}/branch/:branch_hash/card/:card_hash`}>
+        <p>{moment(branch.created_at).format('LLL')}</p>
 
-            <RouterCardControls
-                branch={branch} 
-                onCreateAncestorClick={onCreateAncestorClick}
-                onCreateDescendantClick={onCreateDescendantClick}
-                onCreateSiblingClick={onCreateSiblingClick}
-                onDeleteBranchClick={onDeleteBranchClick}
-            />
-
-        </Route>
+        {relation == relations.CURRENT ? (
+            <ul className="c-card__controls reset">
+            
+                <li className="c-card__control c-card__control--create-before">
+        
+                    <Link
+                        to={`${match.url}/branch/${branch.id}/create-before`}
+                        onClick={(e) => {
+                            e.preventDefault()
+                            onCreateSiblingClick(branch)
+                        }}
+                        title="Create Before"
+                    />
+        
+                </li>
+        
+                <li className="c-card__control c-card__control--create-after">
+        
+                    <Link
+                        to={`${match.url}/branch/${branch.id}/create-after`}
+                        onClick={(e) => {
+                            e.preventDefault()
+                            onCreateNextSiblingClick(branch)
+                        }}
+                        title="Create After"
+                    />
+        
+                </li>
+        
+                <li className="c-card__control c-card__control--create-parent">
+        
+                    <Link
+                        to={`${match.url}/branch/${branch.id}/create-parent`}
+                        onClick={(e) => {
+                            e.preventDefault()
+                            onCreateAncestorClick(branch)
+                        }}
+                        title="Create Parent"
+                    />
+        
+                </li>
+        
+                <li className="c-card__control c-card__control--create-child">
+        
+                    <Link
+                        to={`${match.url}/branch/${branch.id}/create-child`}
+                        onClick={(e) => {
+                            e.preventDefault()
+                            onCreateDescendantClick(branch)
+                        }}
+                        title="Create Child"
+                    />
+        
+                </li>
+        
+                <li className="c-card__control c-card__control--delete">
+        
+                    <Link
+                        to={`${match.url}/branch/${branch.id}/delete`}
+                        onClick={(e) => {
+                            e.preventDefault()
+                            onDeleteBranchClick(branch)
+                        }}
+                        title="Delete"
+                    />
+        
+                </li>
+        
+            </ul>
+        ) : undefined}
     </div>
 )
 

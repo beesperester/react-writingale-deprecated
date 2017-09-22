@@ -62,7 +62,7 @@ const Index = ({ trees, match }) => (
 
         <Route exact path={`${match.url}`} component={ConnectedList} />
 
-        <Route path={`${match.url}/:id`} component={Show} />
+        <Route exact path={`${match.url}/:id`} component={Show} />
     </div>
 )
 

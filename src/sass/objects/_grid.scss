@@ -1,5 +1,8 @@
 .o-grid {
     display: grid;
+    // height: 80vh;
+    overflow: hidden;
+    position: relative;
 
     @include breakpoint(tablet) {
         grid-template-columns: 1fr 1fr;
@@ -9,9 +12,9 @@
         // grid-template-columns: repeat(1);
     }
 
-    margin: -1rem;
+    // margin: -1rem;
 
     & > div {
-        margin: 1rem;
+        // margin: 1rem;
     }
 }
