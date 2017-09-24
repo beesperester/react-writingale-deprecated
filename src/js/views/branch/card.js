@@ -36,11 +36,12 @@ function mapStateToProps(state, props) {
     const branch = props.branch
     let relation = undefined
 
-    if (app.active_branch_node) {
-        if (app.active_branch_node.id == branch.id) {
+    if (app.active_branch) {
+        // console.info('@views/branch/card/mapStateToProps', app.active_branch)
+        if (app.active_branch == branch.id) {
             relation = relations.CURRENT
         } else {        
-            const active_trail = app.active_branch_node.trail
+            const active_trail = state.branches[app.active_branch].trail
             const active_parent_trail = active_trail.split('/').slice(0, -1).join('/')
             const branch_trail = branch.trail
 
@@ -131,87 +132,83 @@ const Card = ({
     onDeleteBranchClick,
     onSelectBranchClick
 }) => (
-    <div className={calcClasses(relation).join(' ')}>
-        <Link 
-            to='#'
-            onClick={e => {
-                e.preventDefault()
-                onSelectBranchClick(branch)
-            }}
-        >{branch.id}</Link>
+    <div 
+        className={calcClasses(relation).join(' ')}
+        onClick={() => {
+            onSelectBranchClick(branch)
+        }}
+    >
 
         <p>{moment(branch.created_at).format('LLL')}</p>
 
-        {relation == relations.CURRENT ? (
-            <ul className="c-card__controls reset">
-            
-                <li className="c-card__control c-card__control--create-before">
+        <ul className="c-card__controls reset">
         
-                    <Link
-                        to={`${match.url}/branch/${branch.id}/create-before`}
-                        onClick={(e) => {
-                            e.preventDefault()
-                            onCreateSiblingClick(branch)
-                        }}
-                        title="Create Before"
-                    />
-        
-                </li>
-        
-                <li className="c-card__control c-card__control--create-after">
-        
-                    <Link
-                        to={`${match.url}/branch/${branch.id}/create-after`}
-                        onClick={(e) => {
-                            e.preventDefault()
-                            onCreateNextSiblingClick(branch)
-                        }}
-                        title="Create After"
-                    />
-        
-                </li>
-        
-                <li className="c-card__control c-card__control--create-parent">
-        
-                    <Link
-                        to={`${match.url}/branch/${branch.id}/create-parent`}
-                        onClick={(e) => {
-                            e.preventDefault()
-                            onCreateAncestorClick(branch)
-                        }}
-                        title="Create Parent"
-                    />
-        
-                </li>
-        
-                <li className="c-card__control c-card__control--create-child">
-        
-                    <Link
-                        to={`${match.url}/branch/${branch.id}/create-child`}
-                        onClick={(e) => {
-                            e.preventDefault()
-                            onCreateDescendantClick(branch)
-                        }}
-                        title="Create Child"
-                    />
-        
-                </li>
-        
-                <li className="c-card__control c-card__control--delete">
-        
-                    <Link
-                        to={`${match.url}/branch/${branch.id}/delete`}
-                        onClick={(e) => {
-                            e.preventDefault()
-                            onDeleteBranchClick(branch)
-                        }}
-                        title="Delete"
-                    />
-        
-                </li>
-        
-            </ul>
-        ) : undefined}
+            <li className="c-card__control c-card__control--create-before">
+    
+                <Link
+                    to={`${match.url}/branch/${branch.id}/create-before`}
+                    onClick={(e) => {
+                        e.preventDefault()
+                        onCreateSiblingClick(branch)
+                    }}
+                    title="Create Before"
+                />
+    
+            </li>
+    
+            <li className="c-card__control c-card__control--create-after">
+    
+                <Link
+                    to={`${match.url}/branch/${branch.id}/create-after`}
+                    onClick={(e) => {
+                        e.preventDefault()
+                        onCreateNextSiblingClick(branch)
+                    }}
+                    title="Create After"
+                />
+    
+            </li>
+    
+            <li className="c-card__control c-card__control--create-parent">
+    
+                <Link
+                    to={`${match.url}/branch/${branch.id}/create-parent`}
+                    onClick={(e) => {
+                        e.preventDefault()
+                        onCreateAncestorClick(branch)
+                    }}
+                    title="Create Parent"
+                />
+    
+            </li>
+    
+            <li className="c-card__control c-card__control--create-child">
+    
+                <Link
+                    to={`${match.url}/branch/${branch.id}/create-child`}
+                    onClick={(e) => {
+                        e.preventDefault()
+                        onCreateDescendantClick(branch)
+                    }}
+                    title="Create Child"
+                />
+    
+            </li>
+    
+            <li className="c-card__control c-card__control--delete">
+    
+                <Link
+                    to={`${match.url}/branch/${branch.id}/delete`}
+                    onClick={(e) => {
+                        e.preventDefault()
+                        onDeleteBranchClick(branch)
+                    }}
+                    title="Delete"
+                />
+    
+            </li>
+    
+        </ul>
     </div>
 )
 

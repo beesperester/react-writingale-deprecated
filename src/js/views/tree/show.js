@@ -14,7 +14,6 @@ import waitFor from 'components/waitfor'
 import { selectTree } from 'db/selectors'
 
 // Branches
-import BranchList from 'views/branch/list'
 import Card from 'views/branch/card'
 
 // Actions
@@ -93,8 +92,11 @@ function mapStateToProps(state, props) {
     if (!tree.id) return {}
 
     const branches_flattened = tree.branches.reduce(flattenBranches, [])
+    // gather column indices by calculating the maximum depth of all branches
     const column_indices = branches_flattened.reduce((carry, branch) => {
-        if (!carry.includes(branch.depth)) carry.push(branch.depth)
+        const depth = branch.trail.split('/').length
+
+        if (!carry.includes(depth)) carry.push(depth)
 
         return carry
     }, []).sort()
@@ -102,9 +104,12 @@ function mapStateToProps(state, props) {
 
     // console.info(column_indices)
 
+    // map branches to column by depth
     const columns = column_indices.map(depth => {
         return branches_flattened.filter(branch => {
-            return branch.depth == depth
+            const branch_depth = branch.trail.split('/').length
+
+            return branch_depth == depth
         })
     })
 
@@ -159,7 +164,7 @@ const Show = ({
             {columns.map((column, index) => (
                 <div 
                     key={index}
-                    className={['o-column', app.active_branch_node && column.map(branch => branch.id).includes(app.active_branch_node.id) ? 'o-column--focus' : undefined].filter(Boolean).join(' ')}
+                    className={['o-column', column.map(branch => branch.id).includes(app.active_branch) ? 'o-column--focus' : undefined].filter(Boolean).join(' ')}
                 >
 
                     {column.sort(sortColumn).map((branch, index) => (

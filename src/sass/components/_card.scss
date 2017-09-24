@@ -1,14 +1,25 @@
 .c-card {
     background-color: darken($gray-lighter, 40%);
-    border-left: 0.5rem solid $gray-dark;
+    border-left: 0.25rem solid $gray-dark;
+    padding: 1.5rem;
     position: relative;
+    z-index: 10;
+
+    &:hover {
+        // z-index: 15;
+
+        .c-card__controls {
+            display: block;
+            // z-index: 15;
+        }
+    }
 
     &--current {
         background-color: $gray-lighter !important;
         border-color: $brand-success;
-        z-index: 10;
-
+        
         @include dropshadow;
+        z-index: 15;
     }
 
     &--descendant {
@@ -24,15 +35,18 @@
     }
 
     &__controls {
+        display: none;
         height: 100%;
         left: 0;
+        pointer-events: none;
         position: absolute;
         top: 0;
         width: 100%;
-        z-index: 15;
+        z-index: 20;
     }
 
     &__control {
+        pointer-events: initial;
         position: absolute;
         left: 0;
         top: 0;
@@ -46,49 +60,49 @@
         }
 
         &--create-parent {
-            left: -1rem;
+            left: 0;
             top: 50%;
             transform: translate(0, -50%); 
 
             & > a {
-                border-top-left-radius: 0.25rem;
-                border-bottom-left-radius: 0.25rem;
+                border-top-right-radius: 0.25rem;
+                border-bottom-right-radius: 0.25rem;
                 height: 2rem;                
             }
         }
 
         &--create-child {
-            left: 100%;
+            left: calc(100% - 1rem);
             top: 50%;
             transform: translate(0, -50%);
 
             & > a {
-                border-top-right-radius: 0.25rem;
-                border-bottom-right-radius: 0.25rem;
+                border-top-left-radius: 0.25rem;
+                border-bottom-left-radius: 0.25rem;
                 height: 2rem;
             }
         }
 
         &--create-before {
             left: 50%;
-            top: -1rem;
+            top: 0rem;
             transform: translate(-50%, 0);
 
             & > a {
-                border-top-left-radius: 0.25rem;
-                border-top-right-radius: 0.25rem;
+                border-bottom-left-radius: 0.25rem;
+                border-bottom-right-radius: 0.25rem;
                 width: 2rem;
             }
         }
         
         &--create-after {
             left: 50%;
-            top: 100%;
+            top: calc(100% - 1rem);
             transform: translate(-50%, 0);
 
             & > a {
-                border-bottom-left-radius: 0.25rem;
-                border-bottom-right-radius: 0.25rem;
+                border-top-left-radius: 0.25rem;
+                border-top-right-radius: 0.25rem;
                 width: 2rem;
             }
         }

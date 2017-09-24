@@ -4,7 +4,7 @@ import { signals } from 'signals'
 // Utilities
 import etherio, { endpoint } from 'libraries/etherio'
 
-import { digestState } from 'digest'
+import { digestState } from 'db/digest'
 
 /**
  * Create sibling for branch. 
@@ -109,8 +109,6 @@ export function deleteBranch(branch) {
 export function selectBranch(branch) {
     return {
         type: signals.SELECT_BRANCH,
-        data: {
-            active_branch_node: Object.assign({}, branch)
-        }
+        data: branch.id
     }
 }

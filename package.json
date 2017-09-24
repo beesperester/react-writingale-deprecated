@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "bootstrap": "4.0.0-beta",
     "deepmerge": "^1.5.1",
     "history": "^4.7.2",
     "moment": "^2.18.1",

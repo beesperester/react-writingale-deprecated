@@ -4,7 +4,7 @@ import { signals } from 'signals'
 // Utilities
 import etherio, { endpoint } from 'libraries/etherio'
 
-import { digestState } from 'digest'
+import { digestState } from 'db/digest'
 
 /**
  * Create sibling for parent_id or tree_id with sorting. 

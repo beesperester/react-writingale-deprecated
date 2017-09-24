@@ -54,7 +54,7 @@ export class EtherIO
             })
         }
 
-        console.info('EtherIO', config)
+        console.info('@libraries/etherio/EtherIO.request', config)
 
         // check if url already requested, return queued promise
         const promise_index = this.queue.map(promise => promise.url).indexOf(url.toString)
