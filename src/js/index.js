@@ -12,6 +12,9 @@ import { trees } from 'db/schema'
 // Router
 import Router from 'router'
 
+// Environment
+import environment from 'environment'
+
 // Store
 import store from 'db/store'
 import { digestState } from 'db/digest'
@@ -23,7 +26,7 @@ import etherio from 'libraries/etherio'
 import { signals } from 'signals'
 
 // override base url
-etherio.config.base_url = 'http://localhost:3000/api/v1.0/'
+etherio.config.base_url = environment.BASE_URL
 
 etherio.get(etherio.prefixUrl('state')).then(data => {
     const data_digested = digestState(data)
