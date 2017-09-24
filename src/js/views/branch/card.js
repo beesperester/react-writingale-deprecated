@@ -35,13 +35,15 @@ function mapStateToProps(state, props) {
     const app = state.app
     const branch = props.branch
     let relation = undefined
+    let active_branch = undefined
 
     if (app.active_branch) {
+        active_branch = state.branches[app.active_branch]
         // console.info('@views/branch/card/mapStateToProps', app.active_branch)
         if (app.active_branch == branch.id) {
             relation = relations.CURRENT
         } else {        
-            const active_trail = state.branches[app.active_branch].trail
+            const active_trail = active_branch.trail
             const active_parent_trail = active_trail.split('/').slice(0, -1).join('/')
             const branch_trail = branch.trail
 
@@ -67,7 +69,7 @@ function mapStateToProps(state, props) {
 
     return {
         ...props,
-        app,
+        active_branch,
         relation
     }
 }
@@ -102,12 +104,13 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-function calcClasses(relation) {
+function calcClasses(branch, branches, relation) {
     let classes = [
         'o-card',
         'c-card'
     ]
 
+    // add relation specific classes
     if (relation == relations.CURRENT) {
         classes.push('c-card--current')
     } else if (relation == relations.ASCENDANT) {
@@ -118,12 +121,32 @@ function calcClasses(relation) {
         classes.push('c-card--sibling')
     }
 
+    // add column specific classes
+    if (branches.filter(current_branch => {
+        return current_branch.parent_id == branch.parent_id
+    }).pop().id == branch.id || !branch.parent_id) {
+        classes.push('c-card--last')
+    }
+
     return classes.filter(Boolean)
+}
+
+function scrollIntoView(el, relation) {
+    if (el) {
+        // we have an element and a relation
+        if (relation == relations.CURRENT || relation == relations.ASCENDANT || relation == relations.DESCENDANT) {
+            el.scrollIntoView({
+                behavior: 'smooth',
+            })
+        }
+    }
 }
 
 const Card = ({
     match,
+    branches,
     branch,
+    active_branch,
     relation,    
     onCreateAncestorClick,
     onCreateDescendantClick,
@@ -133,10 +156,11 @@ const Card = ({
     onSelectBranchClick
 }) => (
     <div 
-        className={calcClasses(relation).join(' ')}
+        className={calcClasses(branch, branches, relation).join(' ')}
         onClick={() => {
             onSelectBranchClick(branch)
         }}
+        ref={el => scrollIntoView(el, relation)}
     >
 
         <p>{moment(branch.created_at).format('LLL')}</p>

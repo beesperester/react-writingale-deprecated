@@ -1,34 +1,22 @@
 .o-column {
-    // max-height: 100%;
-    padding: 0;
+    max-height: 70vh;
+    padding: 1rem;
     padding-bottom: 1rem;
     padding-top: 1rem;
     position: relative;
     overflow-x: hidden;
-    // overflow-y: auto;
+    overflow-y: scroll;
     z-index: 1;
 
     &:first-child {
-        padding-left: 1rem;
+        // padding-left: 1rem;
     }
 
     &:last-child {
-        padding-right: 1rem;
+        // padding-right: 1rem;
     }
 
     &--focus {
         z-index: 5;
-        margin-left: -1rem;
-        margin-right: -1rem;
-        padding-left: 1rem;
-        padding-right: 1rem;
-
-        &:first-child {
-            padding-left: 2rem;
-        }
-    
-        &:last-child {
-            padding-right: 2rem;
-        }
     }
 }

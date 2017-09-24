@@ -142,6 +142,21 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
+/**
+ * 
+ */
+function calcClasses(column, app) {
+    let classes = [
+        'o-column'
+    ]
+
+    if (column.map(branch => branch.id).includes(app.active_branch)) {
+        classes.push('o-column--focus')
+    }
+
+    return classes.filter(Boolean)
+}
+
 const Show = ({
     app,
     tree,
@@ -164,11 +179,15 @@ const Show = ({
             {columns.map((column, index) => (
                 <div 
                     key={index}
-                    className={['o-column', column.map(branch => branch.id).includes(app.active_branch) ? 'o-column--focus' : undefined].filter(Boolean).join(' ')}
+                    className={calcClasses(column, app).join(' ')}
                 >
 
                     {column.sort(sortColumn).map((branch, index) => (
-                        <Card key={branch.id} branch={branch} />
+                        <Card
+                            branches={column.sort(sortColumn)}
+                            key={branch.id} 
+                            branch={branch}
+                        />
                     ))}
 
                 </div>

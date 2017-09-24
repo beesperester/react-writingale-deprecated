@@ -9,21 +9,29 @@
         // z-index: 15;
 
         .c-card__controls {
-            display: block;
+            opacity: 1;
             // z-index: 15;
         }
     }
 
+    &--last {
+        // margin-bottom: 1rem;
+    }
+
     &--current {
-        background-color: $gray-lighter !important;
+        background-color: $gray-lightest !important;
         border-color: $brand-success;
         
         @include dropshadow;
         z-index: 15;
+
+        .c-card__controls {
+            display: block;
+        }
     }
 
     &--descendant {
-        background-color: darken($gray-lighter, 10%);
+        background-color: darken($gray-lighter, 0%);
     }
 
     &--ascendant {
@@ -38,9 +46,11 @@
         display: none;
         height: 100%;
         left: 0;
+        opacity: 0;
         pointer-events: none;
         position: absolute;
         top: 0;
+        transition: opacity 150ms ease-in-out;
         width: 100%;
         z-index: 20;
     }
